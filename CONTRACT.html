@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contract</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 3px solid #ddd;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            padding: 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover { 
+            background-color: #0056b3; 
+        }
+
+        .hidden { 
+            display: none; 
+        }
+
+        select {
+            width: 300px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .preview-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .button-group {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-group button {
+            padding: 5px 10px;
+            font-size: 14px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .button-group button:hover {
+            background-color: rgba(255, 0, 0, 0.8);
+        }
+
+      
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload button {
+            padding: 12px 30px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-upload button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h2>SUIVI LES CONTRAT</h2>
+
+
+
+<select id="group">
+    <option value="-1001787397401">AGRI STRATEGIE</option>
+    <option value="-1001857451298">AGRI SUPPORT</option>
+    <option value="-4179123948">BEST PROFIL</option>
+    <option value="-1002080960662">AGRICONOMIE</option>
+    <option value="-1002032761527">FARM LABOUR</option>
+</select>
+
+
+<select id="finca">
+    <option value="FINCA 1">FINCA 1</option>
+    <option value="FINCA 2">FINCA 2</option>
+    <option value="FINCA 3">FINCA 3</option>
+    <option value="FINCA 4">FINCA 4</option>
+    <option value="FINCA 5">FINCA 5</option>
+    <option value="FINCA 6">FINCA 6</option>
+    <option value="FINCA 8">FINCA 8</option>
+    <option value="FINCA 9">FINCA 9</option>
+    <option value="FINCA 13">FINCA 13</option>
+    <option value="FINCA 19">FINCA 19</option>
+    <option value="FINCA 20">FINCA 20</option>
+    <option value="FINCA 21">FINCA 21</option>
+    <option value="FINCA 22">FINCA 22</option>
+</select>
+
+<select id="worker"></select>
+
+
+<div class="file-upload">
+    <button>Sélectionnez le contrat</button>
+    <input type="file" id="imageInput" accept="image/*">
+</div>
+
+
+<div id="preview-container" class="hidden">
+    <div class="preview-container">
+        <div class="button-group">
+            <button id="delete">🗑 Supprimer</button>
+            <button id="confirm">✅ Confirmer</button>
+        </div>
+        <img id="preview" alt="Image sélectionnée">
+    </div>
+</div>
+
+
+<button id="send" class="hidden">📤 Envoyer à Telegram</button>
+
+<script>
+    const imageInput = document.getElementById("imageInput");
+    const previewContainer = document.getElementById("preview-container");
+    const previewImage = document.getElementById("preview");
+    const deleteButton = document.getElementById("delete");
+    const confirmButton = document.getElementById("confirm");
+    const sendButton = document.getElementById("send");
+    const workerSelect = document.getElementById("worker");
+    const groupSelect = document.getElementById("group");
+    const fincaSelect = document.getElementById("finca");
+
+    let imageDataUrl = null;
+
+    // chan imae
+    imageInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                imageDataUrl = reader.result;
+                previewImage.src = imageDataUrl;
+                previewContainer.classList.remove("hidden");
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    //  Supp
+    deleteButton.addEventListener("click", () => {
+        previewContainer.classList.add("hidden");
+        imageInput.value = ""; 
+        imageDataUrl = null;
+    });
+
+    // confr
+    confirmButton.addEventListener("click", () => {
+        sendButton.classList.remove("hidden");
+    });
+
+    // telegram
+    sendButton.addEventListener("click", () => {
+        const workerName = workerSelect.value;
+        const groupId = groupSelect.value;
+        const finca = fincaSelect.value;
+
+        if (!imageDataUrl) {
+            alert("Veuillez sélectionner  le contrat avant d'envoyer.");
+            return;
+        }
+
+        fetch(imageDataUrl)
+            .then(res => res.blob())
+            .then(blob => {
+                const formData = new FormData();
+                formData.append("chat_id", groupId);
+                formData.append("photo", blob, "photo.jpg");
+                formData.append("caption", `${workerName} ( ${finca} )`);
+
+                fetch("https://api.telegram.org/bot7561853556:AAElzI6FYzNb6yNUV6EA_Bnzkec2hUrcP70/sendPhoto", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                
+                .catch(error => console.error("Erreur lors de l'envoi:", error));
+            });
+    });
+
+
+    fetch('https://script.google.com/macros/s/AKfycbwAiB1V0BBGSUkXQFnw351xoGMlmD_wBSzHviJwoLOAuSi9rAlSMCjfpd5T2ohdgBsyZA/exec')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item;
+                option.textContent = item;
+                workerSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error("Erreur de chargement des données:", error));
+
+   
+    $(document).ready(function() {
+        $('#worker').select2({
+            placeholder: "Sélectionner l'ouvrier",
+            allowClear: true
+        });
+    });
+
+
+
+    sendButton.addEventListener("click", () => {
+        const group = groupSelect.value;
+        const finca = fincaSelect.value;
+        const worker = workerSelect.value;
+
+       
+        if (!group || !finca || !worker) {
+            alert("Veuillez spécifier toutes les valeurs avant de soumettre.");
+            return;
+        }
+
+        
+        const [workerId, ...workerNameArr] = worker.split(' ');
+        const workerName = workerNameArr.join(' ');  
+
+        
+        const url = "https://script.google.com/macros/s/AKfycbzZjmo1PoWxpuxe1hOBasi2c2tlsa5cn2iWlwOQZk6jdIgeWchfFC5Juk3vEhAqu7QE/exec";  
+
+        const formData = new FormData();
+        formData.append("group", group);
+        formData.append("finca", finca);
+        formData.append("workerId", workerId);  
+        formData.append("workerName", workerName); 
+
+        fetch(url, {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            
+        })
+        .catch(error => console.error("Erreur lors de l'envoi des données :", error));
+    });
+
+    sendButton.addEventListener("click", () => {
+    const worker = workerSelect.value;
+
+    if (!worker) {
+        alert("Veuillez sélectionner le facteur avant l'envoi.");
+        return;
+    }
+
+    const [workerId, ...workerNameArr] = worker.split(' ');
+    const workerName = workerNameArr.join(' ');  
+
+    const url = "https://script.google.com/macros/s/AKfycbzIKjHqFywsBNy_SZOlhhVpOsVm_HnlW7H9-qwWcVm73FYaqz0Pu-i3bI1a9tyJ2DQd/exec";  
+
+    const formData = new FormData();
+    formData.append("workerId", workerId);  
+
+    fetch(url, {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("Données mises à jour avec succès !");
+        } else if (data.status === "not found") {
+            alert("C OK");
+        } else {
+            alert(" ERREUR: " + data.message);
+        }
+    })
+    .catch(error => console.error("Erreur lors de l'envoi :", error));
+});
+
+</script>
+
+</body>
+</html>

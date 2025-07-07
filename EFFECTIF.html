@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EFFECTIF CAMPO</title>
+  <style>
+    
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+      color: #333;
+    }
+
+   
+    table {
+      width: 80%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background-color: #fff;
+    }
+
+    th, td {
+      padding: 10px 15px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #4a90e2;
+      color: white;
+    }
+
+    td {
+      background-color: #f9f9f9;
+    }
+
+    td button {
+      margin: 5px;
+      padding: 6px 12px;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+    }
+
+    td button:hover {
+      opacity: 0.8;
+    }
+
+    .edit-button {
+      background-color: #4a90e2;
+      color: white;
+    }
+
+    .delete-button {
+      background-color: #f44336;
+      color: white;
+    }
+
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 5px;
+      width: 60%;
+      max-width: 500px;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+    }
+
+    .modal form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal label {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .modal select, .modal input {
+      margin-top: 10px;
+      font-weight: bold;
+      width: 99%;
+      padding: 5px;
+      border-radius: 4px;
+    }
+
+    .modal input[type="text"],
+    .modal input[type="date"],
+    .modal input[type="number"] {
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .modal button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+
+    .modal button:hover {
+      background-color: #45a049;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    #downloadExcel, #takeScreenshot, #takeScreenshot1 {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      color: white;
+      background-color: #4a90e2;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+      
+    }
+
+    .table-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+    #downloadExcel:hover, #takeScreenshot:hover, #takeScreenshot1:hover {
+      background-color: #45a049;
+    }
+
+    #downloadExcel:active, #takeScreenshot:active, #takeScreenshot1:active {
+      background-color: #397d3b;
+    }
+
+
+    #downloadExcel {
+      margin-right: 20px;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="button-container">
+    <button id="downloadExcel">Téléchargez Excel</button>
+    <button id="takeScreenshot">Téléchargez Image</button>
+    <button id="takeScreenshot1" onclick="copyLink()">Copier le lien</button>
+  </div>
+  <div id="result"></div>
+<div class="table-container">
+<table id="dataTable">
+  <thead>
+    <tr>
+      <th>Equipe</th>
+      <th>Finca</th>
+      <th>Date</th>
+      <th>Tarea</th>
+      <th>Effectif</th>
+      <th>Procédures</th>
+    </tr>
+  </thead>
+  <tbody>
+   
+  </tbody>
+</table>
+</div>
+
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    
+    <form id="updateForm">
+        <label for="equipe">Equipe:</label>
+        <select id="equipe" name="equipe" class="form-control" required>
+        </select><br>
+
+      <label for="finca">Finca:</label>
+      <input type="text" id="finca" name="finca" readonly><br>
+
+      <label for="date">Date:</label>
+      <input type="text" id="date" name="date"><br>
+
+      <label for="tarea">Tarea:</label>
+       <select id="tarea" name="tarea" class="form-control" required><br>
+
+      <label for="effectif">Effectif:</label>
+      <input type="number" id="effectif" name="effectif"><br>
+
+      <button type="button" onclick="updateData()">Mettre à jour</button>
+    </form>
+  </div>
+</div>
+<div id="confirmationModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeConfirmationModal()">&times;</span>
+      <p>Êtes-vous sûr de vouloir supprimer cette Tache?</p>
+      <button id="confirmDeleteButton" class="delete-button">Confirmer</button>
+      <button onclick="closeConfirmationModal()" class="edit-button">Annuler</button>
+    </div>
+  </div>
+  
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas/dist/html2canvas.min.js"></script>
+<script>
+ fetch('https://script.google.com/macros/s/AKfycbxoy923OwLPZA7S2wq5qOjcp8xA1IVc-28vxSMXDCqobxt9keI_NRfQLwe9E1Y1w12OoQ/exec')
+      .then(response => response.json())
+      .then(data => {
+        const comboBox = document.getElementById('equipe');
+        data.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item;
+          option.textContent = item;
+          comboBox.appendChild(option);
+        });
+      });
+
+var confirmationModal = document.getElementById("confirmationModal");
+var confirmDeleteButton = document.getElementById("confirmDeleteButton");
+let rowToDeleteIndex = null;
+
+
+function showConfirmationModal(index) {
+    rowToDeleteIndex = index; 
+    confirmationModal.style.display = "block";
+}
+
+
+function closeConfirmationModal() {
+    confirmationModal.style.display = "none";
+    rowToDeleteIndex = null; 
+}
+
+confirmDeleteButton.onclick = function() {
+    if (rowToDeleteIndex !== null) {
+        deleteRow(rowToDeleteIndex); 
+        closeConfirmationModal(); 
+    }
+};
+function copyLink() {
+            
+            const currentURL = window.location.href;
+
+            
+            navigator.clipboard.writeText(currentURL).then(() => {
+                alert("Le lien a été copié avec succès !");
+            }).catch((err) => {
+                alert("Une erreur s'est produite lors de la copie du lien: " + err);
+            });
+        };
+
+       
+
+
+
+const webAppUrl = "https://script.google.com/macros/s/AKfycbyw5kngb7juXJ4wVJvxrSvrI6u7K2c9fZ4k9OehRkSJbKp1oiW-z5JCiaZCjD9pypE66A/exec"; 
+
+
+var modal = document.getElementById("myModal");
+var span = document.getElementsByClassName("close")[0];
+
+
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+
+function loadData() {
+    fetch(webAppUrl + '?action=getData')
+        .then(response => response.json())
+        .then(data => {
+            let tableBody = document.getElementById("dataTable").getElementsByTagName("tbody")[0];
+            tableBody.innerHTML = '';  
+
+            data.forEach(function(row, index) {
+                
+             
+                if (row[1] === "FINCA 20") {
+                    let tr = document.createElement("tr");
+                    
+                  
+                    row.forEach(function(cell, colIndex) {
+                        let td = document.createElement("td");
+                        
+                       
+                        if (colIndex === 2) {
+                            let date = new Date(cell);
+                            let day = String(date.getDate()).padStart(2, '0');
+                            let month = String(date.getMonth() + 1).padStart(2, '0'); 
+                            let year = date.getFullYear();
+                            td.textContent = `${day}/${month}/${year}`;  
+                        } else {
+                            td.textContent = cell; 
+                        }
+                        
+                        tr.appendChild(td);
+                    });
+
+                    
+                    let tdActions = document.createElement("td");
+                    let editButton = document.createElement("button");
+                    editButton.textContent = "Modifier";
+                    editButton.classList.add("edit-button");
+                    editButton.onclick = function() {
+                        openModal(index, row);
+                    };
+
+                    let deleteButton = document.createElement("button");
+                    deleteButton.textContent = "Supprimer";
+                    deleteButton.classList.add("delete-button");
+                    deleteButton.onclick = function() {
+                        showConfirmationModal(index);
+                    };
+
+                    tdActions.appendChild(editButton);
+                    tdActions.appendChild(deleteButton);
+                    tr.appendChild(tdActions);
+                    tableBody.appendChild(tr);
+                }
+            });
+        });
+}
+
+
+
+function openModal(index, row) {
+    document.getElementById("equipe").value = row[0]; 
+    document.getElementById("finca").value = row[1];   
+    let rawDate = row[2]; 
+    if (rawDate.includes("T")) {
+    rawDate = rawDate.split("T")[0]; 
+    }
+    let date = new Date(rawDate);
+    date.setDate(date.getDate() + 1); 
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, '0'); 
+    let day = String(date.getDate()).padStart(2, '0');
+    let updatedDate = `${year}-${month}-${day}`;
+
+    document.getElementById("date").value = updatedDate;
+    document.getElementById("tarea").value = row[3];   
+    document.getElementById("effectif").value = row[4];
+    modal.style.display = "block";
+
+  
+    window.currentRowIndex = index;
+}
+
+
+function updateData() {
+    const equipe = document.getElementById("equipe").value;
+    const finca = document.getElementById("finca").value;
+    const date = document.getElementById("date").value;
+    const tarea = document.getElementById("tarea").value;
+    const effectif = document.getElementById("effectif").value;
+
+    fetch(webAppUrl + '?action=updateData&index=' + window.currentRowIndex + '&equipe=' + equipe + '&finca=' + finca + '&date=' + date + '&tarea=' + tarea + '&effectif=' + effectif)
+        .then(response => response.json())
+        .then(() => {
+            loadData(); 
+            modal.style.display = "none"; 
+        });
+}
+
+
+function deleteRow(index) {
+    fetch(webAppUrl + '?action=deleteData&index=' + index)
+        .then(response => response.json())
+        .then(() => {
+            loadData(); // 
+        });
+}
+function exportTableToExcel() {
+    const table = document.getElementById('dataTable');
+
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); 
+    const yyyy = today.getFullYear();
+    const dateStr = `${dd}-${mm}-${yyyy}`;
+    const filename = `Effectif_${dateStr}.xlsx`;
+
+    const workbook = XLSX.utils.table_to_book(table, {
+        sheet: "EFFECTIF",
+        raw: true, 
+    });
+
+    const sheet = workbook.Sheets["EFFECTIF"];
+    const range = XLSX.utils.decode_range(sheet["!ref"]);
+    const colIndex = 4;
+
+    for (let row = range.s.r + 1; row <= range.e.r; row++) {
+        const cellAddress = XLSX.utils.encode_cell({ r: row, c: colIndex });
+        const cell = sheet[cellAddress];
+
+        if (cell && cell.t === "s" && !isNaN(cell.v)) {
+            cell.t = "n";
+            cell.v = parseFloat(cell.v); 
+        }
+    }
+    XLSX.writeFile(workbook, filename);
+}
+
+      function takeScreenshot() {
+        const table = document.getElementById('dataTable');
+        html2canvas(table).then(canvas => {
+          const link = document.createElement('a');
+          link.download = 'Effectif F20.png';
+          link.href = canvas.toDataURL();
+          link.click();
+        }).catch(error => console.error('Error:', error));
+      }
+
+      document.getElementById('downloadExcel').addEventListener('click', exportTableToExcel);
+      document.getElementById('takeScreenshot').addEventListener('click', takeScreenshot);
+      document.addEventListener('DOMContentLoaded', loadData);
+
+ fetch('https://script.google.com/macros/s/AKfycbxLSEPXBHctMIigbNugYuXB2DvUeHRUp0dxug3-bhoPP0_HduBj1LbSCdpl_UA25p1zdw/exec')
+      .then(response => response.json())
+      .then(data => {
+        const comboBox = document.getElementById('tarea');
+        data.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item;
+          option.textContent = item;
+          comboBox.appendChild(option);
+        });
+      });
+      
+</script>
+
+</body>
+</html>

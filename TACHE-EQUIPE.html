@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter Équipe et Tâche</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            width: 90%;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 26px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #4CAF50;
+            background-color: #fff;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #aaa;
+        }
+
+        .confirm-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #054725;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .confirm-button:hover {
+            background-color: #02532a;
+        }
+
+        .confirm-button:active {
+            background-color: #02401d;
+        }
+
+        .confirm-button:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Form for Adding an Equipe -->
+    <div class="container">
+        <form id="dataFormEquipe">
+            <h2>AJOUTER UNE ÉQUIPE</h2>
+            <label for="equipe">Equipe:</label><br>
+            <input id="equipe" name="equipe" class="form-control" required /><br>
+            
+            <label for="finca">Finca:</label><br>
+            <input type="text" id="finca" name="finca" class="form-control" /><br>
+
+            <button type="button" class="confirm-button" onclick="confirmequipe()">Confirmer</button>
+        </form>
+    </div>
+
+    <!-- Form for Adding a Tâche -->
+    <div class="container">
+        <form id="dataFormTache">
+            <h2>AJOUTER UNE TÂCHE</h2>
+            <label for="tache">Tâche:</label><br>
+            <input id="tache" name="tache" class="form-control" required /><br>
+            
+            <label for="finca">Finca:</label><br>
+            <input type="text" id="finca" name="finca" class="form-control" /><br>
+
+            <button type="button" class="confirm-button" onclick="confirmtarea()">Confirmer</button>
+        </form>
+    </div>
+
+    <script>
+        // Function to handle form submission for "Equipe"
+        function confirmequipe() {
+            var formData = new FormData(document.getElementById('dataFormEquipe'));
+
+            fetch('https://script.google.com/macros/s/AKfycbwks_VIryulz7AhgAeCI62tzkl0BLkMBMIUdayBmurhH4jAMyM2haJKmXF24x-7rHTy/exec', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Données soumises avec succès !');
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+
+        // Function to handle form submission for "Tâche"
+        function confirmtarea() {
+            var formData = new FormData(document.getElementById('dataFormTache'));
+
+            fetch('https://script.google.com/macros/s/AKfycbyJOQQb4-eCiOOWQeF8gwfZ_dIauOau2EfJjTRNdWnF1w9v7ShY4fEbjI3oOVuNv2rvSg/exec', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Données soumises avec succès !');
+            })
+            .catch(error => {
+                alert('Error: ' + error);
+            });
+        }
+    </script>
+
+</body>
+</html>

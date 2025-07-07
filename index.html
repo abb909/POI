@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <title>AROMA RH</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, rgb(59, 130, 246), rgb(30, 58, 138)); 
+            color: #ffffff; 
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: row;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 256px;
+            background-color: rgb(0, 121, 107);
+            padding: 1.5rem;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            position: fixed;  
+            top: 0;
+            left: 0;
+            height: 100vh;  
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            padding: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            color: #3498db; 
+            transition: transform 0.3s ease;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #f5f7fa;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar-header:hover .logo-icon {
+            transform: rotate(360deg); 
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 1rem;
+            background: none;
+            color: #d1d5db; 
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: left;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background-color: rgb(0, 121, 107); 
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background-color: rgb(3, 212, 188); 
+            color: #fff;
+        }
+
+        .nav-item i {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 10px;
+            background-color: #ffffff; /* Light background for the main content */
+            box-shadow: inset 0px 0px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 1rem;
+            margin-left: 260px; /* Ensure main content is pushed to the right */
+            transition: margin-left 0.3s ease;
+        }
+
+        .container {
+            max-width: 90rem;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            color: #ffffff;
+            text-transform: capitalize;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .stats-card {
+            background-color: rgb(0, 121, 107);
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+           
+        }
+
+        .stats-title {
+            font-size: 1rem;
+            color: #ffffff;
+            text-align: center;
+            font-weight: 400;
+        }
+
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 0.25rem;
+            color: #ffffff;
+            text-align: right;
+        }
+
+        .stats-percentage {
+            font-size: 1rem;
+            margin-top: 0.25rem;
+            color: #fffb00;
+            font-weight: bold;
+        }
+
+        .stats-icon {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #3b82f6; 
+        }
+
+        .stats-icon i {
+            width: 2rem;
+            height: 2rem;
+            color: #fff;
+        }
+
+        /* Table Section */
+        .tables-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            background-color: #ffffff;
+        }
+
+        .data-table {
+            background-color:rgba(100, 175, 166, 0.747);
+            border-radius: 1rem;
+            box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header {
+            background-color: rgb(2, 51, 46);
+            padding: 1.5rem;
+            border-bottom: 2px solid rgb(1, 70, 62);
+            text-align: center;
+            border-radius: 20px 20px 0px  0px;
+        }
+
+        .table-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #ffffff;
+            background-color: rgb(3, 90, 80);
+        }
+
+        td {
+            padding: 1rem;
+            color: #ffffff;
+            border-bottom: 2px solid #f3f4f6;
+            font-size: 1rem;
+        }
+
+        tr:hover td {
+            background-color: rgb(160, 201, 196);
+        }
+
+        /* Sidebar Toggle for Mobile */
+        .sidebar-toggle {
+            font-size: 2.5rem;
+            background-color: transparent;
+            border: none;
+            color: rgb(0, 121, 107);
+            cursor: pointer;
+            display: none;
+        }
+
+        
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .layout {
+                flex-direction: column;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);  
+                position: fixed;
+                z-index: 999;
+                width: 100%;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);  
+            }
+
+            .layout {
+                flex-direction: column;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .sidebar-nav {
+                gap: 1rem;
+            }
+
+            .nav-item {
+                padding: 1rem 1.25rem;
+                font-size: 1.1rem;
+                margin: 5px;
+            }
+
+            .sidebar-header {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            /* Overlay */
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 998;  
+                display: none;  
+            }
+
+            .overlay.active {
+                display: block; 
+            }
+        }
+
+        /* Sidebar Styling */
+.sidebar {
+    width: 256px;
+    background-color: rgb(2, 66, 59);
+    padding: 1.5rem;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+/* Sidebar Collapsed */
+.sidebar.collapsed {
+    transform: translateX(-100%);
+}
+
+
+.toggle-btn {
+    position: absolute;
+    top: 1rem;
+    right: -40px;
+    background-color: #1f2937;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-btn:hover {
+    background-color: #374151;
+}
+
+
+.sub-nav {
+    
+    display: none;
+    padding-left: 20px;
+}
+
+.sub-nav .nav-item {
+    padding-left: 30px;
+    font-size: 14px;
+    color: #bdc3c7;
+    margin: 5px;
+}
+
+.sub-nav .nav-item:hover {
+    background-color: rgb(8, 167, 148);
+}
+
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.open {
+        transform: translateX(0);
+    }
+}
+
+.table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #download-btn  {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+
+        #download-btn:hover {
+            transform: scale(1.1);  /* Slightly enlarge the button on hover */
+            background-color: #45a049; /* Darker green on hover */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #download-btn i {
+            font-size: 24px;
+        }
+
+        #download-btn1  {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+
+        #download-btn1:hover {
+            transform: scale(1.1);  /* Slightly enlarge the button on hover */
+            background-color: #45a049; /* Darker green on hover */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #download-btn1 i {
+            font-size: 24px;
+        }
+
+        .table-container table th {
+  background-color: #004d40; /* لون أخضر غامق */
+  color: white;
+}
+
+.table-container table td {
+  background-color: #e0f2f1; /* لون أخضر فاتح */
+  color: #000;
+}
+
+.table-container table tr:nth-child(even) {
+  background-color: #f5f5f5; 
+}
+
+.question-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background-color: #FF5733;
+    color: rgb(253, 0, 0);
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.question-mark:hover {
+    background-color: #C70039;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* Background with opacity */
+    transition: opacity 0.3s ease;
+}
+
+/* Modal content */
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    color: #000;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Close button */
+.close-btn {
+    color: #5f5454;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+}
+
+/* Close button hover effect */
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Scrollable list */
+#missing-names-list {
+    max-height: 300px; /* Adjust based on desired max height */
+    overflow-y: auto; /* Enables vertical scrolling */
+    padding-right: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+}
+
+/* List items */
+#missing-names-list li {
+    padding: 8px;
+    background-color: rgb(0, 121, 107);
+    color: #ffffff;
+    margin: 5px 0;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+#missing-names-list li:hover {
+    background-color: rgb(9, 202, 180);
+}
+
+/* Button styling */
+#show-missing-btn {
+    background-color: #ffa600;
+    color: rgb(255, 254, 254);
+    border: none;
+    padding: 0;
+    font-weight: bold;
+    font-size: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#show-missing-btn:hover {
+    background-color: #e7c2a0;
+}
+
+.data-table {
+    max-height: 500px; 
+    overflow-y: auto;  
+    margin-bottom: 20px; 
+}
+
+.table-container {
+    max-height: 400px; 
+    overflow-y: auto; 
+}
+
+.data-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i data-lucide="dollar-sign" class="logo-icon"></i>
+                <span class="logo-text">CAMPO</span>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" id="customers-toggle">
+                    <i data-lucide="users"></i>
+                    <span>Controle de Présence</span>
+                </button>
+                <div class="sub-nav" id="customers-subnav">
+                <a href="POINTAGE20.html">
+                    <button class="nav-item">
+                        <span>POINTAGE</span>
+                    </button>
+                </a>
+                <a href="EFF20.html">
+                    <button class="nav-item">
+                        <span>EFFECTIF</span>
+                    </button>
+                </a>
+                </div>
+                <button class="nav-item" id="deals-toggle">
+                    <i data-lucide="dollar-sign"></i>
+                    <span>Gestion Laboral</span>
+                </button>
+                <div class="sub-nav" id="deals-subnav">
+                    <a href="CART.html">
+                    <button class="nav-item">
+                        <span>NV EMBOUCHE</span>
+                    </button>
+                </a>
+                    <a href="CONTRACT.html">
+                    <button class="nav-item">
+                        <span>CONTRACT</span>
+                    </button>
+                </a>
+                    <a href="rib.html">
+                    <button class="nav-item">
+                        <span>RIB</span>
+                    </button>
+                </a>
+                <a href="https://aroma-rh.github.io/HESPATEC/">
+                    <button class="nav-item">
+                        <span>Hispatec Group</span>
+                    </button>
+                </a>
+                </div>
+                <button class="nav-item" id="customers-toggle1">
+                    <i data-lucide="users"></i>
+                    <span>Gestion de Présence</span>
+                </button>
+                <div class="sub-nav" id="customers-subnav1">
+                <a href="POINTAGE.html">
+                    <button class="nav-item">
+                        <span>POINTAGE</span>
+                    </button>
+                </a>
+                <a href="EFFECTIF.html">
+                    <button class="nav-item">
+                        <span>EFFECTIF</span>
+                    </button>
+                </a>
+                    <a href="https://aroma-rh.github.io/PHISTORY/">
+                    <button class="nav-item">
+                        <span>Historique de Pointage</span>
+                    </button>
+                </a>
+                </div>
+                <a href="BASE.html">
+                    <button class="nav-item">
+                        <i data-lucide="calendar"></i>
+                        <span>La Base</span>
+                    </button>
+                </a>
+                <a href="CONTACT.html">
+                <button class="nav-item">
+                    <i data-lucide="calendar"></i>
+                    <span>Contactez-Nous</span>
+                </button>
+            </a>
+            <button class="nav-item" id="customers-toggle2">
+                <i data-lucide="users"></i>
+                <span>Autres options</span>
+            </button>
+            <div class="sub-nav" id="customers-subnav2">
+            
+            <a href="TACHE-EQUIPE.html">
+                <button class="nav-item">
+                    <span>Ajouter Equipe/Tache</span>
+                </button>
+            </a>
+            <a href="https://aroma-rh.github.io/MINI-BUS/">
+                <button class="nav-item">
+                    <span>Effectif mini bus</span>
+                </button>
+            </a>
+                <a href="https://aroma-rh.github.io/CALCULATOR/">
+                <button class="nav-item">
+                    <span>Calculatrice</span>
+                </button>
+            </a>
+                <a href="https://abdermb98.github.io/pointage/">
+                    <button class="nav-item">
+                        <span>POINTAGE F20</span>
+                    </button>
+                </a>
+            </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+            
+            <div class="container">
+                
+                
+                <div class="stats-grid">
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <span class="stats-title">Total des travailleurs</span>
+                        </div>
+                        <div class="stats-value" id="totalEmployees">0</div>
+                    </div>
+                    
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <span class="stats-title">Total Heures</span>
+                        </div>
+                        <div class="stats-value" id="totalHours">0</div>
+                    </div>
+                    
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <span class="stats-title">Marquer la présence</span>
+                            <div class="stats-percentage" id="missingContractPercentage">0%</div>
+                        </div>
+                        <div class="stats-value" id="missingContract">0</div>
+                        <button id="show-missing-btn" class="question-mark">?</button>
+                    </div>
+                    <div id="missing-names-modal" class="modal" style="display: none;">
+                        <div class="modal-content">
+                            <span class="close-btn">&times;</span>
+                            <h3>Liste non pointes</h3>
+                            <ul id="missing-names-list"></ul>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <span class="stats-title">Manque de Contrat</span>
+                            <div class="stats-percentage" id="nonContractPercentage">0%</div>
+                        </div>
+                        <div class="stats-value" id="nonEmptyColumn7">0</div>
+                        
+                    </div>
+                    
+
+                    
+                
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <span class="stats-title">Total Equipes</span>
+                        </div>
+                        <div class="stats-value" id="totalEquipe">0</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <span class="stats-title">Total taches</span>
+                        </div>
+                        <div class="stats-value" id="totaltache">0</div>
+                    </div>
+                </div>
+
+                
+            
+                
+                    
+                
+                <!-- Tables Section -->
+                <div class="tables-section">
+                    <div class="data-table">
+                        <div class="table-header">
+                            <h2>SUIVI DE EFFECTIF</h2>
+                            <button id="download-btn">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                        
+                        
+
+                        <div class="table-container">
+                            <table border="1">
+                                <thead>
+                                    <tr>
+                                        <th>EQUIPE</th>
+                                        <th>FINCA</th>
+                                        <th>DATE</th>
+                                        <th>TAREA</th>
+                                        <th>EFFECTIF</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body2">
+                                    <!-- table effectif-->
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+          
+          
+                    <div class="data-table">
+                        <div class="table-header">
+                        <h2>SUIVI DE PONTAGE</h2>
+                            <button id="download-btn1">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table border="1">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>NOME</th>
+                                        <th>EQUIPE</th>
+                                        <th>RHH</th>
+                                        <th>DATE</th>
+                                        <th>FINCA</th>
+                                        <th>SITUATION</th>
+                                        <th>CONTRACT</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body">
+                                    <!--ا table poinatge-->
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="overlay" onclick="toggleSidebar()"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+    <script>
+document.getElementById('customers-toggle').addEventListener('click', function() {
+            const subNav = document.getElementById('customers-subnav');
+            subNav.style.display = subNav.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('deals-toggle').addEventListener('click', function() {
+            const subNav = document.getElementById('deals-subnav');
+            subNav.style.display = subNav.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('customers-toggle1').addEventListener('click', function() {
+            const subNav = document.getElementById('customers-subnav1');
+            subNav.style.display = subNav.style.display === 'block' ? 'none' : 'block';
+        });
+        document.getElementById('customers-toggle2').addEventListener('click', function() {
+            const subNav = document.getElementById('customers-subnav2');
+            subNav.style.display = subNav.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                if (this !== document.getElementById('customers-toggle') && document.getElementById('customers-subnav').style.display === 'block') {
+                    document.getElementById('customers-subnav').style.display = 'none';
+                }
+                if (this !== document.getElementById('deals-toggle') && document.getElementById('deals-subnav').style.display === 'block') {
+                    document.getElementById('deals-subnav').style.display = 'none';
+                }
+                if (this !== document.getElementById('customers-toggle1') && document.getElementById('customers-subnav').style.display === 'block') {
+                    document.getElementById('customers-subnav1').style.display = 'none';
+                }
+                if (this !== document.getElementById('customers-toggle2') && document.getElementById('customers-subnav').style.display === 'block') {
+                    document.getElementById('customers-subnav2').style.display = 'none';
+                }
+            });
+        });
+
+
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+    function displayData(data) {
+        const tableBody = document.getElementById('table-body');
+        const totalEmployeesElement = document.getElementById('totalEmployees');
+        const totalHoursElement = document.getElementById('totalHours');
+        const missingContractElement = document.getElementById('missingContract');
+        const nonEmptyColumn7Element = document.getElementById('nonEmptyColumn7');
+        const totalEquipeElement = document.getElementById('totalEquipe');
+        const missingContractPercentageElement = document.getElementById('missingContractPercentage');
+        const nonContractPercentageElement = document.getElementById('nonContractPercentage');
+        const missingNamesButton = document.getElementById('show-missing-btn');
+        
+        tableBody.innerHTML = '';
+        let employeeCount = 0;
+        let totalHours = 0;
+        let missingContractCount = 0;
+        let nonEmptyColumn7Count = 0;
+        let uniqueGroups = new Set();
+        let missingNames = [];
+
+        const filteredData = data.filter(row => row[5] === 'FINCA 20');
+
+        filteredData.forEach(row => {
+            if (row.some(cell => cell && typeof cell === 'string' && cell.trim() !== "")) {
+                let tr = document.createElement('tr');
+
+                if (row[6] && row[6].trim().toLowerCase() === 'FACE_40') {
+                    tr.cells[6] && (tr.cells[6].style.backgroundColor = 'yellow');
+                }
+
+                if (row[7] && row[7].trim() !== '') {
+                    tr.style.backgroundColor = 'orange';
+                }
+
+                row.forEach((cell, index) => {
+                    let td = document.createElement('td');
+ 
+                    if (index === 4 && cell) {
+                        td.textContent = formatDate(cell); 
+                    } else {
+                        td.textContent = cell || '-'; 
+                    }
+                    
+                    if (index === 7 && cell && cell.trim() === 'NON') {
+                        let button = document.createElement('button');
+                        button.textContent = '?';
+
+                       
+                        button.style.marginLeft = '10px';
+                        button.style.cursor = 'pointer';
+                        button.style.width = '30px';
+                        button.style.height = '30px';
+                        button.style.borderRadius = '50%';
+                        button.style.border = 'none';
+                        button.style.backgroundColor = '#FF5733'; 
+                        button.style.color = 'white';
+                        button.style.fontSize = '16px';
+                        button.style.fontWeight = 'bold';
+                        button.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                        button.style.transition = 'all 0.3s ease';
+
+                        button.addEventListener('mouseenter', () => {
+                            button.style.backgroundColor = '#C70039'; 
+                            button.style.boxShadow = '0 6px 8px rgba(0, 0, 0, 0.15)';
+                        });
+
+                        button.addEventListener('mouseleave', () => {
+                            button.style.backgroundColor = '#FF5733';
+                            button.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                        });
+
+                        button.addEventListener('click', function() {
+                            fetchCommentFromGoogleSheets(row[0], td);
+                        });
+
+                        td.appendChild(button);
+                    }
+
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+                employeeCount++;
+
+                const value = parseFloat(row[3]);
+                if (!isNaN(value)) {
+                    totalHours += value;
+                }
+
+                if (row[6] && row[6].trim() !== '') {
+                    missingContractCount++;
+                }
+
+                if (row[7] && row[7].trim() !== '') {
+                    nonEmptyColumn7Count++;
+                }
+
+                if (row[2] && row[2].trim() !== "") {
+                    uniqueGroups.add(row[2]);
+                }
+
+                if (!row[6] || row[6].trim() === '' || row[6].trim() !== 'FACE_40') {
+                    missingNames.push(row[1]);
+                }
+            }
+        });
+
+        if (totalEmployeesElement) totalEmployeesElement.textContent = employeeCount;
+        if (totalHoursElement) totalHoursElement.textContent = totalHours;
+        if (missingContractElement) missingContractElement.textContent = missingContractCount;
+        if (nonEmptyColumn7Element) nonEmptyColumn7Element.textContent = nonEmptyColumn7Count;
+        if (totalEquipeElement) totalEquipeElement.textContent = uniqueGroups.size;
+
+        let missingContractPercentage = employeeCount > 0 ? ((missingContractCount / employeeCount) * 100).toFixed(2) + "%" : "0%";
+        let nonContractPercentage = employeeCount > 0 ? ((nonEmptyColumn7Count / employeeCount) * 100).toFixed(2) + "%" : "0%";
+
+        if (missingContractPercentageElement) missingContractPercentageElement.textContent = missingContractPercentage;
+        if (nonContractPercentageElement) nonContractPercentageElement.textContent = nonContractPercentage;
+
+        if (missingNamesButton) {
+            missingNamesButton.addEventListener('click', function () {
+                updateModal(missingNames);
+            });
+        }
+        
+        document.getElementById('download-btn1').addEventListener('click', function() {
+            downloadTableAsXLSX1(filteredData);
+        });
+    }
+
+    function updateModal(names) {
+        let namesList = document.getElementById('missing-names-list');
+        namesList.innerHTML = '';
+
+        if (names.length > 0) {
+            names.forEach(name => {
+                let li = document.createElement('li');
+                li.textContent = name;
+                namesList.appendChild(li);
+            });
+        } else {
+            namesList.innerHTML = '<li>Status/li>';
+        }
+
+        document.getElementById('missing-names-modal').style.display = 'block';
+    }
+
+    document.querySelector('.close-btn').addEventListener('click', function () {
+        document.getElementById('missing-names-modal').style.display = 'none';
+    });
+
+    function fetchData() {
+        fetch('https://script.google.com/macros/s/AKfycbw_pOBzwUWz2xBpZna2xHj8u869tADNLflrMlEpfmANumAq0XCo8IS35n40AnsGTakw/exec')
+            .then(response => response.json())
+            .then(data => displayData(data))
+            .catch(error => console.error('Error fetching data:', error));
+    }
+
+    window.fetchData = fetchData;
+    fetchData();
+});
+
+
+function fetchCommentFromGoogleSheets(employeeId, td) {
+    var url = 'https://script.google.com/macros/s/AKfycbxSP9sLqt741vpVa4oasL-0vHWU_iY6bP8z6YAkwY109SghnXZq4S0KgoM8fXMBe8tilA/exec?employeeId=' + employeeId;
+
+    fetch(url)
+        .then(response => response.json())  
+        .then(data => {
+            if (data && data.comment) {
+                
+                let existingNote = td.querySelector('.employee-note');
+
+                if (existingNote) {
+                    
+                    existingNote.remove();
+                } else {
+                    
+                    let note = document.createElement('div');
+                    note.classList.add('employee-note');  
+                    note.textContent =data.comment;
+
+                    
+                    note.style.fontStyle = 'italic';
+                    note.style.fontSize = '14px';
+                    note.style.color = 'rgb(255 255 255)';
+                    note.style.backgroundColor = 'rgb(0 0 0)'; 
+                    note.style.padding = '8px';
+                    note.style.borderRadius = '5px';
+                    note.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                    note.style.marginTop = '8px';
+                    note.style.border = '2px solid rgb(195 176 176)';
+                    note.style.transition = 'all 0.3s ease';
+                    note.style.maxWidth = '300px'; 
+                    note.style.wordWrap = 'break-word'; 
+                    note.addEventListener('mouseenter', function() {
+                        note.style.transform = 'scale(1.05)';
+                        note.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+                    });
+
+                    note.addEventListener('mouseleave', function() {
+                        note.style.transform = 'scale(1)';
+                        note.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                    });
+
+                    
+                    td.appendChild(note);
+                }
+            } else {
+                alert('Aucun');
+            }
+        })
+        .catch(error => {
+            console.error('erreur. ', error);
+            alert('errour');
+        });
+}
+
+
+
+
+
+
+
+
+
+function fetchData1() {
+    fetch('https://script.googleusercontent.com/macros/echo?user_content_key=UD8heN6nFEyDz2PmHw3KaNYzvICjLrXBioaszkrmooiJx76NviHQ1IN3Vo3EY6LIuziYtlsukBfKz8e-xgTlEGtvXiXqAboZm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnM3Kri0XU2oA2Erb822H2YC_cn4PAgp4fTVvyhe9Kb_t1HNO98jGF18scWCFF4--xTcVoiZTVhwsrCA5O_Vi88x6QINgmi3zTA&lib=MY2tE_tyfTs-TzsLCAe0qlZwla2VcZTf1') // Replace with your Apps Script URL
+        .then(response => response.json()) 
+        .then(data1 => displayData1(data1)) 
+        .catch(error => console.error('Error:', error));
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+function displayData1(data) {
+    const tableBody = document.getElementById('table-body2');
+    const totaltacheElement = document.getElementById('totaltache');
+    tableBody.innerHTML = ''; 
+    let uniquetache = new Set();
+    
+    const filteredData = data.slice(1).filter(row => row[1] === 'FINCA 20');  
+
+    filteredData.forEach(row => {
+        if (row.some(cell => cell && typeof cell === 'string' && cell.trim() !== "")) {
+            let tr = document.createElement('tr');
+            row.forEach((cell, index) => {
+                let td = document.createElement('td');
+
+                if (index === 2 && cell) {
+                    td.textContent = formatDate(cell); 
+                } else {
+                    td.textContent = cell || '-'; 
+                }
+                
+                tr.appendChild(td);
+            });
+            tableBody.appendChild(tr);
+
+            if (row[3] && row[3].trim() !== "") {
+                uniquetache.add(row[3]);
+            }
+        }
+    });
+
+    totaltacheElement.textContent = uniquetache.size;
+
+    document.getElementById('download-btn').addEventListener('click', function() {
+        downloadTableAsXLSX(filteredData);
+    });
+}
+
+  
+
+function downloadTableAsXLSX(data) {
+    
+    const headers = ['EQUIPE', 'FINCA', 'DATE', 'TAREA', 'EFFECTIF'];
+
+   
+    const filteredData = data.slice(0).map(row => row.slice(0, 5)); 
+    const dataWithHeaders = [headers, ...filteredData];
+    const ws = XLSX.utils.aoa_to_sheet(dataWithHeaders);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    XLSX.writeFile(wb, "EFFECTIF.xlsx");
+}
+
+function downloadTableAsXLSX1(data, fileName = "POINTAGE.xlsx") {
+    if (!data || data.length < 2) {
+        console.error("No valid data to export.");
+        return;
+    }
+
+    try {
+        const headers = ['ID', 'NOME', 'EQUIPE', 'RHH', 'DATE', 'FINCA'];
+        const filteredData = data.slice(0).map(row => row.slice(0, 6));
+        const dataWithHeaders = [headers, ...filteredData];
+
+        const ws = XLSX.utils.aoa_to_sheet(dataWithHeaders);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+        XLSX.writeFile(wb, fileName);
+    } catch (error) {
+        console.error("Error generating XLSX file:", error);
+    }
+}
+
+
+
+
+
+
+window.addEventListener("load", () => {
+    fetchData(); 
+    fetchData1(); 
+});
+
+
+    </script>
+</body>
+</html>

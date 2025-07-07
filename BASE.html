@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+   
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    h3 {
+      background-color: #4a90e2;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      border-radius: 4px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    table {
+      width: 100%;
+      max-width: 800px;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4a90e2;
+      color: #fff;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #eaf3fc;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #4a90e2;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: #357ab8;
+    }
+
+    
+    #filterButton {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    #filterButton:hover {
+      background-color: #357ab8;
+    }
+    .goToforme {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .goToforme:hover {
+      background-color: #357ab8;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h3>LA BASE (CAMPO)</h3>
+  <div style="text-align: center; margin-top: 10px;">
+    <button class="goToforme" id="copyLinkButton">Copier le lien</button>
+    <button id="filterButton" onclick="filterTable()">Recherch</button>
+    <button id="filterButton" onclick="downloadTable()">Télécharger</button>
+  </div>
+  <table id="dataTable">
+    <thead>
+
+      <tr>
+        <th><input type="text" id="filter1" placeholder="Filtre..."></th>
+        <th><input type="text" id="filter2" placeholder="Filtre..."></th>
+        <th><input type="text" id="filter3" placeholder="Filtre..."></th>
+        <th><input type="text" id="filter4" placeholder="Filtre..." disabled></th>
+        <th><input type="text" id="filter5" placeholder="Filtre..."></th>
+      </tr>
+      <tr>
+        <th>CODIGO</th>
+        <th>NOMBRE</th>
+        <th>NIF</th>
+        <th>CONTRATO</th>
+        <th>ENCARGADO</th>
+      </tr>
+    </thead>
+    <tbody id="tableData"></tbody>
+  </table>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+  <script>
+    document.getElementById('copyLinkButton').addEventListener('click', function() {
+            const pageLink = window.location.href;
+
+            navigator.clipboard.writeText(pageLink)
+                .then(() => {
+                    alert("Lien de la page copié dans le presse-papiers");
+                })
+                .catch(err => {
+                    console.error("Impossible de copier le lien : ", err);
+                    alert("Échec de la copie du lien.");
+                });
+        });
+     function downloadTable() {
+            var table = document.getElementById("dataTable");
+            var rows = table.rows;
+            var degree = rows[2].cells[4].innerText;
+            var wb = XLSX.utils.table_to_book(table, {sheet: "base"});
+            XLSX.writeFile(wb, `${degree}.xlsx`); 
+        }
+    let data = [];  
+    function loadData() {
+      fetch('https://script.google.com/macros/s/AKfycbyQn5_QevlEOIt31TZrCgVsiWGHoLBZUHRPs1pFgLx4Qqm0nthi51w4SJ5QhAfQhGc/exec')
+        .then(response => response.json())
+        .then(jsonData => {
+          data = jsonData;  
+        })
+        .catch(error => {
+          console.error('Error loading data:', error);
+          alert('Error loading data');
+        });
+    }
+
+    function renderTable(displayData) {
+      const tableData = document.getElementById('tableData');
+      tableData.innerHTML = displayData.map(row => 
+        `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`
+      ).join('');
+    }
+
+    function filterTable() {
+      const filters = [
+        document.getElementById("filter1").value.toLowerCase(),
+        document.getElementById("filter2").value.toLowerCase(),
+        document.getElementById("filter3").value.toLowerCase(),
+        "", 
+        document.getElementById("filter5").value.toLowerCase()
+      ];
+
+      const allFiltersEmpty = filters.every((filter, i) => i === 3 || filter === "");
+
+      if (allFiltersEmpty) {
+        document.getElementById('tableData').innerHTML = ''; 
+        return;
+      }
+
+      const filteredData = data.filter(row =>
+        filters.every((filter, i) => {
+          if (!filter || i === 3) return true;  
+
+          const cellValue = row[i] ? row[i].toString().toLowerCase() : '';
+
+          
+          if (i === 4) {
+            const regex = new RegExp(filter, 'i'); 
+            return regex.test(cellValue); 
+          }
+
+          return cellValue.includes(filter);
+        })
+      );
+
+      renderTable(filteredData); 
+    }
+    
+    document.addEventListener('DOMContentLoaded', loadData);
+  </script>
+</body>
+</html>

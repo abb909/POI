@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POINTAGE CAMPO</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+      color: #333;
+    }
+
+    table {
+      width: 80%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background-color: #fff;
+    }
+
+    th, td {
+      padding: 10px 15px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #4a90e2;
+      color: white;
+    }
+
+    td {
+      background-color: #f9f9f9;
+    }
+
+    td button {
+      margin: 5px;
+      padding: 6px 12px;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+    }
+
+    td button:hover {
+      opacity: 0.8;
+    }
+
+    .edit-button {
+      background-color: #4a90e2;
+      color: white;
+    }
+
+    .delete-button {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 5px;
+      width: 60%;
+      max-width: 500px;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+    }
+
+    .modal form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal label {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .modal select, .modal input {
+      margin-top: 10px;
+      font-weight: bold;
+      width: 99%;
+      padding: 5px;
+      border-radius: 4px;
+    }
+
+    .modal input[type="text"],
+    .modal input[type="date"],
+    .modal input[type="number"] {
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .modal button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+
+    .modal button:hover {
+      background-color: #45a049;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    #downloadExcel, #takeScreenshot, #takeScreenshot1 {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      color: white;
+      background-color: #4a90e2;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    #downloadExcel:hover, #takeScreenshot:hover, #takeScreenshot1:hover {
+      background-color: #45a049;
+    }
+
+    #downloadExcel:active, #takeScreenshot:active, #takeScreenshot1:active {
+      background-color: #397d3b;
+    }
+
+    #downloadExcel {
+      margin-right: 20px;
+    }
+    .table-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.highlight {
+    background-color: red; /* تلوين السطر باللون الأحمر */
+}
+
+
+  </style>
+</head>
+<body>
+  <div class="button-container">
+    <button id="takeScreenshot1" onclick="downloadExcel()">Envoyer</button>
+    <button id="takeScreenshot1" onclick="downloadExcel1()">Téléchargez Excel</button>
+    <button id="downloadExcel" style="display: none;">Téléchargez Excel</button>
+    <button id="takeScreenshot" style="display: none;">Téléchargez Image</button>
+    <button id="takeScreenshot1" onclick="copyLink()">Copier le lien</button>
+  </div>
+  <div style="text-align:center; margin: 20px;">
+    <strong>Heures totales: <span id="totalHours">0</span> H</strong> |
+    <strong>Nombre Total de ouvriers: <span id="rowCount">0</span> PRS</strong>
+  </div>
+  <div id="result"></div>
+  <div class="table-container">
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th>MATRICULE</th>
+        <th>NOMBRE</th>
+        <th>EQUIPE</th>
+        <th>HOURS</th>
+        <th>DATE</th>
+        <th>FINCA</th>
+        <th>SITUATION</th>
+        <th>Procédures</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      
+      <form id="updateForm">
+        <label for="matricule">MATRICULE:</label>
+        <input type="text" id="matricule" name="matricule" required><br>
+
+        <label for="nombre">NOMBRE:</label>
+        <input type="text" id="nombre" name="nombre" required><br>
+
+        <label for="equipe">EQUIPE:</label>
+        <select id="equipe" name="equipe" class="form-control" required></select><br>
+
+        <label for="hours">HOURS:</label>
+        <input type="number" id="hours" name="hours" required><br>
+
+        <label for="date">DATE:</label>
+        <input type="text" id="date" name="date"><br>
+
+        <label for="finca">FINCA:</label>
+        <input type="text" id="finca" name="finca" readonly><br>
+
+        <label for="situation">SITUATION:</label>
+        <input type="text" id="situation" name="situation" required><br>
+
+        <button type="button" onclick="updateData()">Mettre à jour</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="confirmationModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeConfirmationModal()">&times;</span>
+      <p>Êtes-vous sûr de vouloir supprimer cette Tache?</p>
+      <button id="confirmDeleteButton" class="delete-button">Confirmer</button>
+      <button onclick="closeConfirmationModal()" class="edit-button">Annuler</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas/dist/html2canvas.min.js"></script>
+  <script>
+    fetch('https://script.google.com/macros/s/AKfycbxoy923OwLPZA7S2wq5qOjcp8xA1IVc-28vxSMXDCqobxt9keI_NRfQLwe9E1Y1w12OoQ/exec')
+      .then(response => response.json())
+      .then(data => {
+        const comboBox = document.getElementById('equipe');
+        data.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item;
+          option.textContent = item;
+          comboBox.appendChild(option);
+        });
+      });
+
+    var confirmationModal = document.getElementById("confirmationModal");
+    var confirmDeleteButton = document.getElementById("confirmDeleteButton");
+    let rowToDeleteIndex = null;
+
+    function showConfirmationModal(index) {
+      rowToDeleteIndex = index; 
+      confirmationModal.style.display = "block";
+    }
+
+    function closeConfirmationModal() {
+      confirmationModal.style.display = "none";
+      rowToDeleteIndex = null; 
+    }
+
+    confirmDeleteButton.onclick = function() {
+      if (rowToDeleteIndex !== null) {
+        deleteRow(rowToDeleteIndex); 
+        closeConfirmationModal(); 
+      }
+    };
+
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbwzHWPjKfWKo-01iWjHVopqLHuzDFASz8ud5_G7J-seBKQJCLTOaBGkrprkKXiPAFhtSQ/exec"; 
+
+    var modal = document.getElementById("myModal");
+    var span = document.getElementsByClassName("close")[0];
+
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    function loadData() {
+    fetch(webAppUrl + '?action=getData')
+        .then(response => response.json())
+        .then(data => {
+          let tableBody = document.getElementById("dataTable").getElementsByTagName("tbody")[0];
+tableBody.innerHTML = '';  
+
+let totalHours = 0;
+let rowCount = 0;
+
+data.forEach(function(row, index) {
+    if (row[5] === "FINCA 20") {
+        let tr = document.createElement("tr");
+
+        row.forEach(function(cell, colIndex) {
+            let td = document.createElement("td");
+
+          
+            if (colIndex === 4) {
+                let date = new Date(cell);
+                let day = String(date.getDate()).padStart(2, '0');
+                let month = String(date.getMonth() + 1).padStart(2, '0');
+                let year = date.getFullYear();
+                td.textContent = `${day}/${month}/${year}`;  
+            } else if (colIndex === 3) {  
+                totalHours += parseFloat(cell) || 0;
+                td.textContent = cell;
+            } else {
+                td.textContent = cell; 
+            }
+
+            if (colIndex === 6 && cell !== "") {
+                td.style.backgroundColor = "green";
+                td.style.color = "white";
+            }
+
+            if (colIndex === 7 && cell === "NON") {
+             
+                tr.style.color = "red"; 
+                tr.style.fontSize = "20px";
+                tr.style.fontWeight = "bold"; 
+                
+            }
+            if (colIndex === 7) {
+                td.style.display = "none";  
+            }
+            tr.appendChild(td);
+        });
+
+
+                    let tdActions = document.createElement("td");
+                    let editButton = document.createElement("button");
+                    editButton.textContent = "Modifier";
+                    editButton.classList.add("edit-button");
+                    editButton.onclick = function() {
+                        openModal(index, row);
+                    };
+
+                    let deleteButton = document.createElement("button");
+                    deleteButton.textContent = "Supprimer";
+                    deleteButton.classList.add("delete-button");
+                    deleteButton.onclick = function() {
+                        showConfirmationModal(index);
+                    };
+
+                    tdActions.appendChild(editButton);
+                    tdActions.appendChild(deleteButton);
+                    tr.appendChild(tdActions);
+                    tableBody.appendChild(tr);
+
+                    rowCount++; 
+                }
+            });
+
+            document.getElementById("totalHours").textContent = totalHours.toFixed(2);
+            document.getElementById("rowCount").textContent = rowCount;
+        });
+}
+
+
+
+function openModal(index, row) {
+    document.getElementById("matricule").value = row[0]; 
+    document.getElementById("nombre").value = row[1]; 
+    document.getElementById("equipe").value = row[2];
+    document.getElementById("hours").value = row[3]; 
+    
+    
+    let date = new Date(row[4]);
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset()); 
+    document.getElementById("date").value = date.toISOString().split('T')[0]; 
+    
+    document.getElementById("finca").value = row[5]; 
+    document.getElementById("situation").value = row[6];
+    modal.style.display = "block";
+    
+    window.currentRowIndex = index;
+}
+
+function updateData() {
+    const matricule = document.getElementById("matricule").value;
+    const nombre = document.getElementById("nombre").value;
+    const equipe = document.getElementById("equipe").value;
+    const hours = document.getElementById("hours").value;
+    const date = document.getElementById("date").value;
+    const finca = document.getElementById("finca").value;
+    const situation = document.getElementById("situation").value;
+
+    fetch(webAppUrl + '?action=updateData&index=' + window.currentRowIndex + '&matricule=' + matricule + '&nombre=' + nombre + '&equipe=' + equipe + '&hours=' + hours + '&date=' + date + '&finca=' + finca + '&situation=' + situation)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                modal.style.display = "none"; 
+                loadData(); 
+            } else {
+                alert("Erreur de mise à jour des données !");
+            }
+        })
+        .catch(error => {
+            alert("Erreur lors de la mise à jour !");
+            console.error("Update error: ", error);
+        });
+}
+function highlightRows() {
+    var table = document.getElementById("dataTable");
+    var rows = table.getElementsByTagName("tr");
+
+    for (var i = 1; i < rows.length; i++) { // بدءًا من الصف الأول (تخطي العنوان)
+        var cells = rows[i].getElementsByTagName("td");
+        var situationCell = cells[7]; // تأكد من أن العمود 3 هو عمود SITUATION (والذي يعد الرقم 4 من اليسار)
+
+        if (situationCell && situationCell.innerText.trim() === "NON") {
+            rows[i].classList.add("highlight"); // إضافة الفئة لتلوين السطر
+        }
+    }
+}
+
+// استدعاء الدالة بعد تحميل الصفحة
+window.onload = highlightRows;
+
+
+
+    function deleteRow(index) {
+      fetch(webAppUrl + '?action=deleteData&index=' + index)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            loadData();
+          } else {
+            alert("Erreur de suppression des données !");
+          }
+        });
+    }
+
+    function copyLink() {
+      const link = window.location.href;
+      navigator.clipboard.writeText(link).then(() => {
+        alert('Lien copié dans le presse-papiers!');
+      }).catch(err => {
+        console.error('Erreur lors de la copie du lien:', err);
+      });
+    }
+
+    function exportTableToExcel() {
+    const table = document.getElementById('dataTable');
+    
+    if (!table) {
+        console.error("Table with ID 'dataTable' not found.");
+        return;
+    }
+    
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = today.getFullYear();
+    const dateStr = `${dd}-${mm}-${yyyy}`;
+    const filename = `POINTAGE_${dateStr}.xlsx`;
+
+    const workbook = XLSX.utils.table_to_book(table, {
+        sheet: "PONTAGE",
+        raw: true,
+    });
+
+    const sheet = workbook.Sheets["PONTAGE"];
+    
+   
+    if (sheet && sheet["!ref"]) {
+        const range = XLSX.utils.decode_range(sheet["!ref"]);
+        
+        for (let col = range.s.c; col <= range.e.c; col++) {
+            for (let row = range.s.r + 1; row <= range.e.r; row++) {
+                const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+                const cell = sheet[cellAddress];
+                if (cell && cell.t === "s" && /\d{2}-\d{2}-\d{4}/.test(cell.v)) {
+                    cell.t = "s";
+                    cell.v = cell.v;
+                }
+            }
+        }
+    } else {
+        console.error("La feuille 'PONTAGE' est manquante ou n'a pas de plage valide.");
+        return;
+    }
+
+    XLSX.writeFile(workbook, filename);
+}
+
+
+
+      function takeScreenshot() {
+        const table = document.getElementById('dataTable');
+        html2canvas(table).then(canvas => {
+          const link = document.createElement('a');
+          link.download = 'POINTAGE F20.png';
+          link.href = canvas.toDataURL();
+          link.click();
+        }).catch(error => console.error('Error:', error));
+      }
+
+      document.getElementById('downloadExcel').addEventListener('click', exportTableToExcel);
+      document.getElementById('takeScreenshot').addEventListener('click', takeScreenshot);
+      document.addEventListener('DOMContentLoaded', loadData);
+
+    loadData(); 
+    
+    function downloadExcel() {
+    fetch(webAppUrl + '?action=getData')
+        .then(response => response.json())
+        .then(data => {
+            
+            let filteredData = data
+                .filter(row => row[5] === "FINCA 20")
+                .map(row => [row[0], row[1], row[2], row[3], formatDate(row[4]), row[5]]);
+
+            if (filteredData.length < 2) {
+                alert("PAS DES DONNEES");
+                return;
+            }
+
+            let rawDate = filteredData[1][4]; 
+            let formattedDate = formatDate(rawDate);
+
+            let headers = ["MATRICULE", "NOMBRE", "EQUIPE", "HOURS", "DATE", "FINCA"];
+
+            let ws = XLSX.utils.aoa_to_sheet([headers, ...filteredData]);
+
+            ws['!autofilter'] = { ref: `A1:F${filteredData.length + 1}` };
+
+            let colWidths = headers.map((_, colIndex) => ({
+                wch: Math.max(
+                    ...filteredData.map(row => (row[colIndex] ? row[colIndex].toString().length : 10)),
+                    headers[colIndex].length
+                ) + 2
+            }));
+            ws['!cols'] = colWidths;
+
+            let wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Données");
+
+            let wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+            let blob = new Blob([wbout], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+            let fileName = `Pointage - ${formattedDate}.xlsx`;
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href); 
+
+            sendToTelegram(blob, fileName);
+        })
+        .catch(error => {
+            console.error("Erreur lors de la récupération des données :", error);
+            alert("Une erreur est survenue lors du téléchargement des données.");
+        });
+}
+
+function downloadExcel1() {
+    fetch(webAppUrl + '?action=getData')
+        .then(response => response.json())
+        .then(data => {
+            
+            let filteredData = data
+                .filter(row => row[5] === "FINCA 20")
+                .map(row => [row[0], row[1], row[2], row[3], formatDate(row[4]), row[5]]);
+
+            if (filteredData.length < 2) {
+                alert("PAS DES DONNEES");
+                return;
+            }
+
+            let rawDate = filteredData[1][4]; 
+            let formattedDate = formatDate(rawDate);
+
+            let headers = ["MATRICULE", "NOMBRE", "EQUIPE", "HOURS", "DATE", "FINCA"];
+
+            let ws = XLSX.utils.aoa_to_sheet([headers, ...filteredData]);
+
+            ws['!autofilter'] = { ref: `A1:F${filteredData.length + 1}` };
+
+            let colWidths = headers.map((_, colIndex) => ({
+                wch: Math.max(
+                    ...filteredData.map(row => (row[colIndex] ? row[colIndex].toString().length : 10)),
+                    headers[colIndex].length
+                ) + 2
+            }));
+            ws['!cols'] = colWidths;
+
+            let wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Données");
+
+            let wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+            let blob = new Blob([wbout], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+            let fileName = `Pointage - ${formattedDate}.xlsx`;
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href); 
+
+            
+        })
+        .catch(error => {
+            console.error("Erreur lors de la récupération des données :", error);
+            alert("Une erreur est survenue lors du téléchargement des données.");
+        });
+}
+function formatDate(rawDate) {
+    if (!rawDate) return "";
+    let date = new Date(rawDate);
+    if (isNaN(date.getTime())) return rawDate; 
+
+    let day = String(date.getDate()).padStart(2, '0');
+    let month = String(date.getMonth() + 1).padStart(2, '0');
+    let year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+}
+
+
+function sendToTelegram(fileBlob, fileName) {
+    let botToken = "7561853556:AAElzI6FYzNb6yNUV6EA_Bnzkec2hUrcP70";
+    let chatId = "-1002408201424";
+
+    let formData = new FormData();
+    formData.append("chat_id", chatId);
+    formData.append("document", fileBlob, fileName);
+
+    fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => console.log("c ok:", data))
+    .catch(error => console.error("errour:", error));
+}
+
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONTACTEZ-NOUS</title>
+    <style>
+      body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(120deg, #fdfbfb, #ebedee);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 25px 35px;
+    border-radius: 15px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 450px;
+    transform: scale(1);
+    transition: transform 0.3s ease;
+}
+
+.container:hover {
+    transform: scale(1.05);
+}
+
+h1 {
+    font-size: 24px;
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+    letter-spacing: 1.5px;
+    position: relative;
+    animation: fadeInDown 1s ease-out;
+}
+
+h1:after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background: #007bff;
+    margin: 10px auto 0;
+    border-radius: 5px;
+}
+
+.RADIO22 {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.radio-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: linear-gradient(120deg, #e0f7fa, #ffffff);
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    transition: transform 0.3s, border-color 0.3s;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.radio-item:hover {
+    transform: translateY(-5px);
+    border-color: #007bff;
+}
+
+.radio-item input[type="radio"] {
+    display: none;
+}
+
+.radio-item input[type="radio"]:checked + label {
+    background-color: #007bff;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 12px 20px;
+    cursor: default;
+    box-shadow: 0 3px 6px rgba(0, 123, 255, 0.4);
+}
+
+.radio-item label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+    flex-grow: 1;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.radio-item label:hover {
+    color: #007bff;
+}
+
+textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    resize: none;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+textarea:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: inset 0 2px 5px rgba(0, 123, 255, 0.3);
+}
+
+.button {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.button:hover {
+    background: linear-gradient(90deg, #0056b3, #007bff);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+textarea::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+textarea:focus::placeholder {
+    color: transparent;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+    </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CONTACTEZ-NOUS</h1>
+    <form id="messageForm">
+        <textarea 
+            id="message" 
+            name="message" 
+            rows="5" 
+            cols="30" 
+            placeholder="Écrivez votre message ici..." 
+            required
+            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; resize: none;">
+        </textarea>
+
+        <div class="RADIO22">
+            <div class="radio-item">
+                <input type="radio" id="IBRAHIM" name="phone" value="+212663715065">
+                <label for="IBRAHIM">IBRAHIM</label>
+            </div>
+            <div class="radio-item">
+                <input type="radio" id="RACHID" name="phone" value="+212662071925">
+                <label for="RACHID">RACHID</label>
+            </div>
+            <div class="radio-item">
+                <input type="radio" id="HICHAM" name="phone" value="+212666043724">
+                <label for="HICHAM">HICHAM</label>
+            </div>
+        </div>
+
+        <button class="button" type="submit">Envoyer à WhatsApp</button>
+    </form>
+
+    <!-- New "Call" Button -->
+    <button class="button call-button" id="callButton">Appeler</button>
+</div>
+
+<script>
+    const form = document.getElementById("messageForm");
+    const callButton = document.getElementById("callButton");
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const message = document.getElementById("message").value.trim();
+        const selectedRadio = document.querySelector('input[name="phone"]:checked');
+
+        if (!message || !selectedRadio) {
+            alert("Veuillez saisir le message et choisir un destinataire.");
+            return;
+        }
+        const phoneNumber = selectedRadio.value; 
+        const encodedMessage = encodeURIComponent(message); 
+       
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+        
+        window.open(whatsappUrl, "_blank");
+    });
+
+    callButton.addEventListener("click", () => {
+        const selectedRadio = document.querySelector('input[name="phone"]:checked');
+
+        if (!selectedRadio) {
+            alert("Veuillez choisir un destinataire à appeler.");
+            return;
+        }
+
+        const phoneNumber = selectedRadio.value;
+        window.location.href = `tel:${phoneNumber}`;
+    });
+</script>
+
+</body>
+</html>
